@@ -1,0 +1,1 @@
+export const baseURL = "https://shopping-app-backend-eight.vercel.app"
