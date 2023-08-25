@@ -34,6 +34,8 @@ const ProductDetails = ({ match }) => {
     (state) => state.products
   );
 
+
+
   const { isAuthenticated } = useSelector(
     (state) => state.User
   );
@@ -83,6 +85,11 @@ const ProductDetails = ({ match }) => {
     myForm.set("rating", rating);
     myForm.set("comment", comment);
     myForm.set("productId", match.params.id);
+
+    if (isAuthenticated === false) {
+      alert.info("Please Login to add Review")
+      return;
+    }
 
     dispatch(newReview(myForm));
 
