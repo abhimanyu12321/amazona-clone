@@ -74,6 +74,8 @@
   width: 14vmax;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   text-decoration: none;
   color: rgb(48, 48, 48);
   margin: 2vmax;
@@ -117,22 +119,29 @@
   transform: translateY(-1vmax);
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 720px) {
   .productCard > p {
-    font-size: 1.7vmax;
+    font-size: 2.5vmax;
   }
 
   .productCard > div {
     margin: 0vmax;
     display: block;
   }
+  .productCard > img {
+    width: 35vmax;
+  }
 
   .productCard > span {
-    font-size: 1.5vmax;
+    font-size: 2.5vmax;
   }
 
   .productCard > div > span {
     margin: 0 0.5vmax;
     font: 300 1vmax "Roboto";
+  }
+  .container {
+    flex-direction: column;
+    align-items: center;
   }
 }

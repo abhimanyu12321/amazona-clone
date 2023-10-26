@@ -109,6 +109,7 @@ const ProductDetails = ({ match }) => {
 
 
     dispatch(productData(match.params.id));
+
   }, [dispatch, match.params.id, error, alert, success]);
 
   return (
