@@ -1,27 +1,22 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./Home.css";
 import ProductCard from "./ProductCard.js";
 import MetaData from "../layout/MetaData";
-import { getProducts } from "../../slice/product/productSlice";
-import { useDispatch, useSelector } from "react-redux"
 import Loader from "../layout/Loader/Loader";
 import { useAlert } from "react-alert";
-
+import { useQuery } from '@tanstack/react-query'
+import { getProducts1 } from "../../api/product.js";
 
 const Home = () => {
-  const dispatch = useDispatch();
   const alert = useAlert();
-  const { loading, error, products } = useSelector((state) => state.products);
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-    }
-    dispatch(getProducts({}))
-
-  }, [dispatch, error, alert])
-
-
+  const { isPending: loading, isError, data, error } = useQuery({
+    queryKey: ['productsList'],
+    queryFn: getProducts1,
+  })
+  if (isError) {
+    alert.error(error)
+  }
   return (
     <>
       <MetaData title="ECOMMERCE" />
@@ -42,8 +37,8 @@ const Home = () => {
 
           <div className="container" id="container" >
 
-            {products &&
-              products.map((product) => (
+            {data.products &&
+              data.products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
 

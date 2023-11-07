@@ -38,6 +38,7 @@ import Payment from './component/Cart/Payment';
 import Contact from "./component/layout/Contact/Contact";
 import About from "./component/layout/About/About";
 import NotFound from "./component/layout/Not Found/NotFound";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 function App() {
   const dispatch = useDispatch();
@@ -165,6 +166,7 @@ function App() {
 
       </Switch>
       <Footer />
+      <ReactQueryDevtools initialIsOpen={false} />
     </Router>
 
   );

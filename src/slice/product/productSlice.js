@@ -3,29 +3,8 @@ import axios from 'axios'
 import { baseURL } from '../../baseAPI';
 
 const initialState = {
-    products: [],
-    loading: false,
-    error: null,
-    productsCount: 0,
     productDetail: {},
-    resultPerPage: 4,
-    success: false
-
 }
-
-// thunk for getting all products
-export const getProducts = createAsyncThunk("getproducts", async ({ keyword = "", currentPage = 1, price = [0, 25000], category, ratings = 0 }, { rejectWithValue }) => {
-
-    let link = `${baseURL}/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&ratings[gte]=${ratings}`;
-
-    if (category) {
-        link = `${baseURL}/api/v1/products?keyword=${keyword}&page=${currentPage}&price[gte]=${price[0]}&price[lte]=${price[1]}&category=${category}&ratings[gte]=${ratings}`;
-    }
-    const { data } = await axios.get(link)
-    return data
-
-
-})
 
 // thunk for getting prduct detail
 export const productData = createAsyncThunk("productdata", async (id, { rejectWithValue }) => {
@@ -67,20 +46,6 @@ export const productSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(getProducts.pending, (state, action) => {
-                state.loading = true
-            })
-            .addCase(getProducts.fulfilled, (state, action) => {
-                state.loading = false;
-                state.products = action.payload.products
-                state.productsCount = action.payload.productsCount
-                state.resultPerPage = action.payload.resultPerPage
-
-            })
-            .addCase(getProducts.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message
-            })
             .addCase(productData.pending, (state, action) => {
                 state.loading = true
             })

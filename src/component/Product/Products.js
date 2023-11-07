@@ -1,7 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Products.css";
-import { useSelector, useDispatch } from "react-redux";
-import { getProducts } from "../../slice/product/productSlice"
 import Loader from "../layout/Loader/Loader";
 import ProductCard from "../Home/ProductCard";
 import Pagination from "react-js-pagination";
@@ -9,6 +7,8 @@ import Slider from "@material-ui/core/Slider";
 import { useAlert } from "react-alert";
 import Typography from "@material-ui/core/Typography";
 import MetaData from "../layout/MetaData";
+import { getProducts1 } from "../../api/product";
+import { useQuery } from "@tanstack/react-query";
 
 const categories = [
   "Footwear",
@@ -18,7 +18,6 @@ const categories = [
 ];
 
 const Products = ({ match }) => {
-  const dispatch = useDispatch();
 
   const alert = useAlert();
 
@@ -28,13 +27,6 @@ const Products = ({ match }) => {
 
   const [ratings, setRatings] = useState(0);
 
-  const {
-    products,
-    loading,
-    error,
-    productsCount,
-    resultPerPage,
-  } = useSelector((state) => state.products);
 
   const keyword = match.params.keyword;
 
@@ -46,13 +38,13 @@ const Products = ({ match }) => {
     setPrice(newPrice);
   };
 
-
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-    }
-    dispatch(getProducts({ keyword, currentPage, price, category, ratings }));
-  }, [dispatch, keyword, currentPage, price, category, ratings, alert, error]);
+  const { isPending: loading, isError, data, error } = useQuery({
+    queryKey: ['productsList'],
+    queryFn: () => getProducts1({ keyword, currentPage, price, category, ratings }),
+  })
+  if (isError) {
+    alert.error(error)
+  }
   return (
     <>
       {loading ? (
@@ -63,8 +55,8 @@ const Products = ({ match }) => {
           <h2 className="productsHeading">Products</h2>
 
           <div className="products">
-            {products &&
-              products.map((product) => (
+            {data.products &&
+              data.products.map((product) => (
                 <ProductCard key={product._id} product={product} />
               ))}
           </div>
@@ -108,12 +100,12 @@ const Products = ({ match }) => {
               />
             </fieldset>
           </div>
-          {resultPerPage && (
+          {data.resultPerPage && (
             <div className="paginationBox">
               <Pagination
                 activePage={currentPage}
-                itemsCountPerPage={resultPerPage}
-                totalItemsCount={productsCount}
+                itemsCountPerPage={data.resultPerPage}
+                totalItemsCount={data.productsCount}
                 onChange={setCurrentPageNo}
                 nextPageText="Next"
                 prevPageText="Prev"
