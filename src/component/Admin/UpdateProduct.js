@@ -18,6 +18,7 @@ import SideBar from "./Sidebar";
 
 
 const UpdateProduct = ({ history, match }) => {
+
   const dispatch = useDispatch();
   const alert = useAlert();
 

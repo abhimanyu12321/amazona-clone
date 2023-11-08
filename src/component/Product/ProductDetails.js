@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./ProductDetails.css";
 import { useSelector, useDispatch } from "react-redux";
 import { useState } from "react";
@@ -8,8 +8,6 @@ import { useAlert } from "react-alert";
 import MetaData from "../layout/MetaData";
 
 import { Rating } from "@material-ui/lab";
-
-import { NEW_REVIEW_RESET, clearErrors, newReview, productData } from "../../slice/product/productSlice";
 import { addItemsToCart } from "../../slice/cart/cartSlice";
 import {
   Dialog,
@@ -21,6 +19,8 @@ import {
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { newReview1, productData1 } from "../../api/product.js";
 
 
 const ProductDetails = ({ match }) => {
@@ -30,25 +30,46 @@ const ProductDetails = ({ match }) => {
   const [open, setOpen] = useState(false);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-  const { productDetail: product, loading, error, success } = useSelector(
-    (state) => state.products
-  );
+
+  // React Query hook call
+  const queryClient = useQueryClient()
+  const { isPending: loading, isError, data, error } = useQuery({
+    queryKey: ['productDetailData', match.params.id],
+    queryFn: () => productData1(match.params.id),
+  })
+
+  const reviewMutation = useMutation({
+    mutationFn: (newReview) => {
+      return newReview1(newReview)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['productDetailData', match.params.id] })
+      alert.success("Review Submitted Successfully");
+    },
+    onError: () => {
+      alert.error(reviewMutation.error.message)
+    }
+  })
 
 
+  if (isError) {
+    alert.error(error.message);
+  }
 
   const { isAuthenticated } = useSelector(
     (state) => state.User
   );
 
+
   const options = {
     size: "large",
-    value: product.ratings,
+    value: data?.product.ratings,
     readOnly: true,
     precision: 0.5,
   };
 
   const increaseQuantity = () => {
-    if (product.Stock <= quantity) return;
+    if (data.product.Stock <= quantity) return;
 
     const qty = quantity + 1;
     setQuantity(qty);
@@ -70,7 +91,7 @@ const ProductDetails = ({ match }) => {
     }
 
     dispatch(addItemsToCart({ id, quantity }));
-    alert.success("Item Added To Cart");
+    alert.success("Item added to cart")
   };
 
   // For adding review and rating
@@ -90,40 +111,21 @@ const ProductDetails = ({ match }) => {
       alert.info("Please Login to add Review")
       return;
     }
-
-    dispatch(newReview(myForm));
-
+    reviewMutation.mutate(myForm)
     setOpen(false);
   };
-
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-    if (success) {
-      alert.success("Review Submitted Successfully");
-      dispatch(NEW_REVIEW_RESET());
-    }
-
-
-    dispatch(productData(match.params.id));
-
-  }, [dispatch, match.params.id, error, alert, success]);
-
   return (
     <>
       {loading ? (
         <Loader />
       ) : (
         <>
-          <MetaData title={`${product.name} -- ECOMMERCE`} />
+          <MetaData title={`${data && data.product.name} -- ECOMMERCE`} />
           <div className="ProductDetails">
             <div >
               <Carousel width="80%" autoPlay={true} infiniteLoop={true} interval="2000">
-                {product.images &&
-                  product.images.map((item, i) => (
+                {data.product.images &&
+                  data.product.images.map((item, i) => (
                     <img
                       className="CarouselImage"
                       key={i}
@@ -137,18 +139,18 @@ const ProductDetails = ({ match }) => {
 
             <div>
               <div className="detailsBlock-1">
-                <h2>{product.name}</h2>
-                <p>Product # {product._id}</p>
+                <h2>{data.product.name}</h2>
+                <p>Product # {data.product._id}</p>
               </div>
               <div className="detailsBlock-2">
                 <Rating {...options} />
                 <span className="detailsBlock-2-span">
                   {" "}
-                  ({product.numOfReviews} Reviews)
+                  ({data.product.numOfReviews} Reviews)
                 </span>
               </div>
               <div className="detailsBlock-3">
-                <h1>{`₹${product.price}`}</h1>
+                <h1>{`₹${data.product.price}`}</h1>
                 <div className="detailsBlock-3-1">
                   <div className="detailsBlock-3-1-1">
                     <button onClick={decreaseQuantity}>-</button>
@@ -156,7 +158,7 @@ const ProductDetails = ({ match }) => {
                     <button onClick={increaseQuantity}>+</button>
                   </div>
                   <button
-                    disabled={product.Stock < 1 ? true : false}
+                    disabled={data.product.Stock < 1 ? true : false}
                     onClick={addToCartHandler}
                   >
                     Add to Cart
@@ -165,14 +167,14 @@ const ProductDetails = ({ match }) => {
 
                 <p>
                   Status:
-                  <b className={product.Stock < 1 ? "redColor" : "greenColor"}>
-                    {product.Stock < 1 ? "OutOfStock" : "InStock"}
+                  <b className={data.product.Stock < 1 ? "redColor" : "greenColor"}>
+                    {data.product.Stock < 1 ? "OutOfStock" : "InStock"}
                   </b>
                 </p>
               </div>
 
               <div className="detailsBlock-4">
-                Description : <p>{product.description}</p>
+                Description : <p>{data.product.description}</p>
               </div>
 
               <button className="submitReview" onClick={submitReviewToggle}>
@@ -214,10 +216,10 @@ const ProductDetails = ({ match }) => {
             </DialogActions>
           </Dialog>
 
-          {product.reviews && product.reviews[0] ? (
+          {data.product.reviews && data.product.reviews[0] ? (
             <div className="reviews">
-              {product.reviews &&
-                product.reviews.map((review) => (
+              {data.product.reviews &&
+                data.product.reviews.map((review) => (
                   <ReviewCard key={review._id} review={review} />
                 ))}
             </div>

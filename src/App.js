@@ -11,7 +11,7 @@ import Products from './component/Product/Products';
 import Search from "./component/Product/Search";
 import LoginSignUp from './component/User/LoginSignUp';
 import { useDispatch, useSelector } from "react-redux";
-import { loadUser } from './slice/user/userSlice';
+import { setAuthentication } from './slice/user/userSlice';
 import UserOptions from './component/layout/header/UserOptions';
 import Profile from "./component/User/Profile";
 import ProtectedRoute from './component/Route/ProtectedRoute';
@@ -39,23 +39,28 @@ import Contact from "./component/layout/Contact/Contact";
 import About from "./component/layout/About/About";
 import NotFound from "./component/layout/Not Found/NotFound";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { useMutation } from '@tanstack/react-query';
+import { loadUser1 } from './api/user.js';
+
 
 function App() {
   const dispatch = useDispatch();
   const { isAuthenticated, user } = useSelector((state) => state.User);
-
-
+  const loadUserQuery = useMutation({
+    mutationFn: loadUser1,
+    onSuccess: (data) => {
+      dispatch(setAuthentication(data))
+    }
+  })
   useEffect(() => {
     webfont.load({
       google: {
         families: ["Roboto", "Droid Sans", "Chilanka"],
       },
     })
-
-    dispatch(loadUser())
-  }, [dispatch])
-
-
+    loadUserQuery.mutate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
 
   return (

@@ -10,7 +10,8 @@ import {
 } from "../../slice/product/AdminProductSlice";
 import { getAllOrders } from "../../slice/order/adminOrderSlice.js";
 import MetaData from "../layout/MetaData";
-import { getAllUsers } from "../../slice/user/adminUserSlice.js";
+import { useQuery } from "@tanstack/react-query";
+import { getAllUsers1 } from "../../api/user.js";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -19,7 +20,11 @@ const Dashboard = () => {
 
   const { orders } = useSelector((state) => state.adminOrder);
 
-  const { users } = useSelector((state) => state.adminUser);
+  // React Query for getting all users
+  const getUsersAdminQuery = useQuery({
+    queryKey: ['getUsersAdminQuery'],
+    queryFn: () => getAllUsers1(),
+  })
 
   let outOfStock = 0;
 
@@ -33,7 +38,6 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(getAdminProduct());
     dispatch(getAllOrders());
-    dispatch(getAllUsers());
   }, [dispatch]);
 
   let totalAmount = 0;
@@ -91,7 +95,7 @@ const Dashboard = () => {
             </Link>
             <Link to="/admin/users">
               <p>Users</p>
-              <p>{users && users.length}</p>
+              <p>{getUsersAdminQuery.data && getUsersAdminQuery.data.length}</p>
             </Link>
           </div>
         </div>

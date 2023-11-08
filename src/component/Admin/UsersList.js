@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import "./productList.css";
-import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
@@ -9,36 +8,36 @@ import MetaData from "../layout/MetaData";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SideBar from "./Sidebar";
-import { getAllUsers, clearErrors, deleteUser, DELETE_USER_RESET } from "../../slice/user/adminUserSlice";
+import { deleteUser1, getAllUsers1 } from "../../api/user";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import Loader from "../layout/Loader/Loader";
 
 const UsersList = ({ history }) => {
-  const dispatch = useDispatch();
-
+  const queryClient = useQueryClient()
   const alert = useAlert();
 
-  const { error, users, isDeleted, message } = useSelector((state) => state.adminUser);
-
+  // React Query Mutation for Resetting password
+  const deleteUserMutation = useMutation({
+    mutationFn: (id) => deleteUser1(id),
+    onSuccess: (data) => {
+      alert.success(data.message);
+      queryClient.invalidateQueries({ queryKey: ['getUsersAdminQuery'] })
+      history.push("/admin/users");
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
+    }
+  })
 
   const deleteUserHandler = (id) => {
-    dispatch(deleteUser(id));
+    deleteUserMutation.mutate(id)
   };
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-
-
-    if (isDeleted) {
-      alert.success(message);
-      history.push("/admin/users");
-      dispatch(DELETE_USER_RESET());
-    }
-
-    dispatch(getAllUsers());
-  }, [dispatch, alert, error, history, isDeleted, message,]);
+  // React Query for getting all users
+  const getUsersAdminQuery = useQuery({
+    queryKey: ['getUsersAdminQuery'],
+    queryFn: () => getAllUsers1(),
+  })
 
   const columns = [
     { field: "id", headerName: "User ID", minWidth: 180, flex: 0.8 },
@@ -98,8 +97,8 @@ const UsersList = ({ history }) => {
 
   const rows = [];
 
-  users &&
-    users.forEach((item) => {
+  getUsersAdminQuery.data &&
+    getUsersAdminQuery.data.forEach((item) => {
       rows.push({
         id: item._id,
         role: item.role,
@@ -111,22 +110,23 @@ const UsersList = ({ history }) => {
   return (
     <>
       <MetaData title={`ALL USERS - Admin`} />
+      {getUsersAdminQuery.isPending ? <Loader /> :
 
-      <div className="dashboard">
-        <SideBar />
-        <div className="productListContainer">
-          <h1 id="productListHeading">ALL USERS</h1>
+        <div className="dashboard">
+          <SideBar />
+          <div className="productListContainer">
+            <h1 id="productListHeading">ALL USERS</h1>
 
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            disableSelectionOnClick
-            className="productListTable"
-            autoHeight
-          />
-        </div>
-      </div>
+            <DataGrid
+              rows={rows}
+              columns={columns}
+              pageSize={10}
+              disableSelectionOnClick
+              className="productListTable"
+              autoHeight
+            />
+          </div>
+        </div>}
     </>
   );
 };

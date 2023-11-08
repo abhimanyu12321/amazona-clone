@@ -7,7 +7,7 @@ import Slider from "@material-ui/core/Slider";
 import { useAlert } from "react-alert";
 import Typography from "@material-ui/core/Typography";
 import MetaData from "../layout/MetaData";
-import { getProducts1 } from "../../api/product";
+import { getProducts } from "../../api/product";
 import { useQuery } from "@tanstack/react-query";
 
 const categories = [
@@ -39,8 +39,8 @@ const Products = ({ match }) => {
   };
 
   const { isPending: loading, isError, data, error } = useQuery({
-    queryKey: ['productsList'],
-    queryFn: () => getProducts1({ keyword, currentPage, price, category, ratings }),
+    queryKey: ['productsList', keyword, currentPage, price, category, ratings],
+    queryFn: () => getProducts({ keyword, currentPage, price, category, ratings }),
   })
   if (isError) {
     alert.error(error)

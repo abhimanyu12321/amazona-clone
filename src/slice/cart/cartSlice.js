@@ -46,7 +46,7 @@ export const cartSlice = createSlice({
             state.shippingInfo = action.payload
 
             localStorage.setItem("shippingInfo", JSON.stringify(state.shippingInfo));
-        }
+        },
     },
     extraReducers: (builder) => {
         builder

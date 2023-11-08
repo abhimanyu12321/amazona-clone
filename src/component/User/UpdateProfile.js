@@ -6,23 +6,34 @@ import FaceIcon from "@material-ui/icons/Face";
 import { useDispatch, useSelector } from "react-redux";
 import { useAlert } from "react-alert";
 import MetaData from "../layout/MetaData";
-import { updateProfile, clearErrors, UPDATE_PROFILE_RESET } from "../../slice/user/updateUserSlice";
-import { loadUser } from "../../slice/user/userSlice";
+import { setAuthentication } from "../../slice/user/userSlice";
 import profile from "../../images/Profile.png"
+import { useMutation } from "@tanstack/react-query";
+import { loadUser1, updateProfile1 } from "../../api/user";
 
 const UpdateProfile = ({ history }) => {
   const dispatch = useDispatch();
   const alert = useAlert();
 
   const { user } = useSelector((state) => state.User);
-  const { error, isUpdated, loading } = useSelector((state) => state.profile);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [avatar, setAvatar] = useState("");
   const [avatarPreview, setAvatarPreview] = useState(profile);
 
-  //console.log("name is : ", name, "email is : ", email, "avtar is : ", avatar, "avtar preview is : ", avatarPreview)
+  // React Mutation for updating profile
+  const updateProfileMutation = useMutation({
+    mutationFn: (updateedData) => updateProfile1(updateedData),
+    onSuccess: (data) => {
+      alert.success("Profile Updated Successfully");
+      loadUserQuery.mutate()
+      history.push("/account");
+    },
+    onError: (err) => {
+      alert.error(err.message)
+    }
+  })
 
   const updateProfileSubmit = (e) => {
     e.preventDefault();
@@ -32,7 +43,8 @@ const UpdateProfile = ({ history }) => {
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("avatar", avatar);
-    dispatch(updateProfile(myForm));
+    // dispatch(updateProfile(myForm));
+    updateProfileMutation.mutate(myForm)
   };
 
   const updateProfileDataChange = (e) => {
@@ -48,30 +60,25 @@ const UpdateProfile = ({ history }) => {
     reader.readAsDataURL(e.target.files[0]);
   };
 
+  //Query for loading user
+  const loadUserQuery = useMutation({
+    mutationFn: loadUser1,
+    onSuccess: (data) => {
+      dispatch(setAuthentication(data))
+    }
+  })
+
   useEffect(() => {
     if (user) {
       setName(user.name);
       setEmail(user.email);
       setAvatarPreview(user.avatar.url);
     }
-
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-    if (isUpdated) {
-      alert.success("Profile Updated Successfully");
-      dispatch(loadUser());
-
-      history.push("/account");
-
-      dispatch(UPDATE_PROFILE_RESET());
-    }
-  }, [dispatch, error, alert, history, user, isUpdated]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, user]);
   return (
     <>
-      {loading ? (
+      {updateProfileMutation.isPending ? (
         <Loader />
       ) : (
         <>

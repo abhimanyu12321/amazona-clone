@@ -11,7 +11,9 @@ import { useHistory } from "react-router-dom";
 import { useAlert } from "react-alert";
 import { useDispatch, useSelector } from "react-redux";
 import profile from "../../../images/Profile.png"
-import { logout } from "../../../slice/user/userSlice";
+import { logoutAction } from "../../../slice/user/userSlice";
+import { useMutation } from "@tanstack/react-query";
+import { logout1 } from "../../../api/user";
 
 const UserOptions = ({ user }) => {
   const { cartItems } = useSelector((state) => state.cart);
@@ -34,12 +36,14 @@ const UserOptions = ({ user }) => {
     { icon: <ExitToAppIcon />, name: "Logout", func: logoutUser },
   ];
 
-  if (user.role === "admin") {
-    options.unshift({
-      icon: <DashboardIcon />,
-      name: "Dashboard",
-      func: dashboard,
-    });
+  if (user) {
+    if (user.role === "admin") {
+      options.unshift({
+        icon: <DashboardIcon />,
+        name: "Dashboard",
+        func: dashboard,
+      });
+    }
   }
 
   function dashboard() {
@@ -55,8 +59,17 @@ const UserOptions = ({ user }) => {
   function cart() {
     history.push("/cart");
   }
+
+  // React Mutation for logging out user
+  const logoutMutation = useMutation({
+    mutationFn: logout1,
+    onSuccess: () => {
+      dispatch(logoutAction())
+    }
+  })
+
   function logoutUser() {
-    dispatch(logout());
+    logoutMutation.mutate()
     alert.success("Logout Successfully");
   }
 
@@ -74,7 +87,7 @@ const UserOptions = ({ user }) => {
         icon={
           <img
             className="speedDialIcon"
-            src={user.avatar.url ? user.avatar.url : profile}
+            src={user && user.avatar.url ? user.avatar.url : profile}
             alt="Profile"
           />
         }

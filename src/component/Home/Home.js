@@ -5,14 +5,14 @@ import MetaData from "../layout/MetaData";
 import Loader from "../layout/Loader/Loader";
 import { useAlert } from "react-alert";
 import { useQuery } from '@tanstack/react-query'
-import { getProducts1 } from "../../api/product.js";
+import { getProducts } from "../../api/product.js";
 
 const Home = () => {
   const alert = useAlert();
 
   const { isPending: loading, isError, data, error } = useQuery({
     queryKey: ['productsList'],
-    queryFn: getProducts1,
+    queryFn: getProducts,
   })
   if (isError) {
     alert.error(error)

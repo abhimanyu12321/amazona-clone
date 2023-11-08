@@ -3,11 +3,11 @@ import { useSelector } from "react-redux";
 import { Redirect, Route } from "react-router-dom";
 
 const ProtectedRoute = ({ isAdmin, component: Component, ...rest }) => {
-  const { loading, isAuthenticated, user } = useSelector((state) => state.User);
+  const { isAuthenticated, user } = useSelector((state) => state.User);
 
   return (
     <>
-      {loading === false && user && (
+      {user && (
         <Route
           {...rest}
           render={(props) => {

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useState } from "react";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
@@ -7,46 +6,37 @@ import MailOutlineIcon from "@material-ui/icons/MailOutline";
 import PersonIcon from "@material-ui/icons/Person";
 import VerifiedUserIcon from "@material-ui/icons/VerifiedUser";
 import SideBar from "./Sidebar";
-import { UPDATE_USER_RESET } from "../../slice/user/adminUserSlice";
-import {
-  getUserDetails,
-  updateUser,
-  clearErrors,
-} from "../../slice/user/adminUserSlice";
 import Loader from "../layout/Loader/Loader";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUserDetails1, updateUser1 } from "../../api/user";
 
 const UpdateUser = ({ history, match }) => {
-  const dispatch = useDispatch();
   const alert = useAlert();
-
-  const { loading, error, user, isUpdated, } = useSelector((state) => state.adminUser);
-
+  const queryClient = useQueryClient()
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [role, setRole] = useState("");
 
+  // React Query for getting all users
+  const getUserDetailAdminQuery = useQuery({
+    queryKey: ['getUserDetailAdminQuery'],
+    queryFn: () => getUserDetails1(match.params.id),
+  })
+
   const id = match.params.id;
 
-  useEffect(() => {
-    if (user && user._id !== id) {
-      dispatch(getUserDetails(id));
-    } else {
-      setName(user.name);
-      setEmail(user.email);
-      setRole(user.role);
-    }
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-
-    if (isUpdated) {
+  // React Query Mutation for Resetting password
+  const updateUserMutation = useMutation({
+    mutationFn: (updatedData) => updateUser1(updatedData),
+    onSuccess: (data) => {
       alert.success("User Updated Successfully");
+      queryClient.invalidateQueries({ queryKey: ['getUserDetailAdminQuery'] })
       history.push("/admin/users");
-      dispatch(UPDATE_USER_RESET());
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
     }
-  }, [dispatch, alert, error, history, isUpdated, user, id]);
+  })
 
   const updateUserSubmitHandler = (e) => {
     e.preventDefault();
@@ -56,8 +46,7 @@ const UpdateUser = ({ history, match }) => {
     myForm.set("name", name);
     myForm.set("email", email);
     myForm.set("role", role);
-
-    dispatch(updateUser({ id, myForm }));
+    updateUserMutation.mutate({ id, myForm })
   };
 
   return (
@@ -66,7 +55,7 @@ const UpdateUser = ({ history, match }) => {
       <div className="dashboard">
         <SideBar />
         <div className="newProductContainer">
-          {loading ? (
+          {getUserDetailAdminQuery.isPending ? (
             <Loader />
           ) : (
             <form
@@ -79,7 +68,7 @@ const UpdateUser = ({ history, match }) => {
                 <PersonIcon />
                 <input
                   type="text"
-                  placeholder="Name"
+                  placeholder={getUserDetailAdminQuery.data.name}
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -89,7 +78,7 @@ const UpdateUser = ({ history, match }) => {
                 <MailOutlineIcon />
                 <input
                   type="email"
-                  placeholder="Email"
+                  placeholder={getUserDetailAdminQuery.data.email}
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -98,8 +87,8 @@ const UpdateUser = ({ history, match }) => {
 
               <div>
                 <VerifiedUserIcon />
-                <select value={role} onChange={(e) => setRole(e.target.value)}>
-                  <option value="">Choose Role</option>
+                <select value={role} onChange={(e) => setRole(e.target.value)} required>
+                  <option value="">{getUserDetailAdminQuery.data ? getUserDetailAdminQuery.data.role : "Choose Role"}</option>
                   <option value="admin">Admin</option>
                   <option value="user">User</option>
                 </select>
@@ -108,11 +97,8 @@ const UpdateUser = ({ history, match }) => {
               <Button
                 id="createProductBtn"
                 type="submit"
-                disabled={
-                  loading ? true : false || role === "" ? true : false
-                }
               >
-                Update
+                {updateUserMutation.isPending ? "Updating...." : "Update"}
               </Button>
             </form>
           )}
