@@ -8,7 +8,7 @@ import { useAlert } from "react-alert";
 import MetaData from "../layout/MetaData";
 
 import { Rating } from "@material-ui/lab";
-import { addItemsToCart } from "../../slice/cart/cartSlice";
+import { addItemsToCartAction } from "../../slice/cart/cartSlice";
 import {
   Dialog,
   DialogActions,
@@ -21,6 +21,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a lo
 import { Carousel } from 'react-responsive-carousel';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { newReview1, productData1 } from "../../api/product.js";
+import { addItemsToCart1 } from "../../api/order.js";
 
 
 const ProductDetails = ({ match }) => {
@@ -38,6 +39,7 @@ const ProductDetails = ({ match }) => {
     queryFn: () => productData1(match.params.id),
   })
 
+  // React Query mutation for adding Review
   const reviewMutation = useMutation({
     mutationFn: (newReview) => {
       return newReview1(newReview)
@@ -83,14 +85,26 @@ const ProductDetails = ({ match }) => {
   };
 
   const id = match.params.id
+
+  // React Query mutation for adding Item to cart
+  const addItemToCartMutation = useMutation({
+    mutationFn: (item) => {
+      return addItemsToCart1(item)
+    },
+    onSuccess: (data) => {
+      dispatch(addItemsToCartAction(data))
+    },
+    onError: () => {
+      alert.error(addItemToCartMutation.error.message)
+    }
+  })
   const addToCartHandler = () => {
 
     if (isAuthenticated === false) {
       alert.info("Please Login to add to cart")
       return;
     }
-
-    dispatch(addItemsToCart({ id, quantity }));
+    addItemToCartMutation.mutate({ id, quantity })
     alert.success("Item added to cart")
   };
 
@@ -161,7 +175,7 @@ const ProductDetails = ({ match }) => {
                     disabled={data.product.Stock < 1 ? true : false}
                     onClick={addToCartHandler}
                   >
-                    Add to Cart
+                    {addItemToCartMutation.isPending ? "Adding...." : "Add to Cart"}
                   </button>
                 </div>
 

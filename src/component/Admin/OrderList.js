@@ -1,44 +1,49 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import "./productList.css";
-import { useSelector, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SideBar from "./Sidebar";
-import {
-  deleteOrder,
-  getAllOrders,
-  clearErrors,
-  DELETE_ORDER_RESET
-} from "../../slice/order/adminOrderSlice";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteOrder1, getAllOrders1 } from "../../api/order";
+import Loader from "../layout/Loader/Loader";
 
 const OrderList = ({ history }) => {
-  const dispatch = useDispatch();
-
+  const queryClient = useQueryClient()
   const alert = useAlert();
 
-  const { error, orders, isDeleted } = useSelector((state) => state.adminOrder);
+
+
+  // React Query Mutation for deleting a order for Admin
+  const deleteOrderAdminMutation = useMutation({
+    mutationFn: (id) => deleteOrder1(id),
+    onSuccess: (data) => {
+      alert.success("Order Deleted Successfully");
+      queryClient.invalidateQueries({ queryKey: ['getAllOrdersAdminQuery'] })
+      history.push("/admin/orders");
+
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
+    }
+  })
 
   const deleteOrderHandler = (id) => {
-    dispatch(deleteOrder(id));
+    deleteOrderAdminMutation.mutate(id)
   };
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
+  // React Query for getting all orders for Admin
+  const getAllOrdersAdminQuery = useQuery({
+    queryKey: ['getAllOrdersAdminQuery'],
+    queryFn: () => getAllOrders1(),
+  })
 
-    if (isDeleted) {
-      alert.success("Order Deleted Successfully");
-      history.push("/admin/orders");
-      dispatch(DELETE_ORDER_RESET());
-    }
+  if (getAllOrdersAdminQuery.isError) {
+    alert.error(getAllOrdersAdminQuery.error.message)
+  }
 
-    dispatch(getAllOrders());
-  }, [dispatch, alert, error, history, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 300, flex: 1 },
@@ -99,8 +104,8 @@ const OrderList = ({ history }) => {
 
   const rows = [];
 
-  orders &&
-    orders.forEach((item) => {
+  getAllOrdersAdminQuery.data &&
+    getAllOrdersAdminQuery.data.forEach((item) => {
       rows.push({
         id: item._id,
         itemsQty: item.orderItems.length,
@@ -118,14 +123,14 @@ const OrderList = ({ history }) => {
         <div className="productListContainer">
           <h1 id="productListHeading">ALL ORDERS</h1>
 
-          <DataGrid
+          {getAllOrdersAdminQuery.isPending ? <Loader /> : <DataGrid
             rows={rows}
             columns={columns}
             pageSize={10}
             disableSelectionOnClick
             className="productListTable"
             autoHeight
-          />
+          />}
         </div>
       </div>
     </>

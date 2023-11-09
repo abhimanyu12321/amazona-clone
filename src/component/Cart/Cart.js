@@ -2,21 +2,36 @@ import React from "react";
 import "./Cart.css";
 import CartItemCard from "./CartItemCard";
 import { useSelector, useDispatch } from "react-redux";
-import { addItemsToCart, removeItemsFromCart } from "../../slice/cart/cartSlice";
+import { addItemsToCartAction, removeItemsFromCart } from "../../slice/cart/cartSlice";
 import { Typography } from "@material-ui/core";
 import RemoveShoppingCartIcon from "@material-ui/icons/RemoveShoppingCart";
 import { Link } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { addItemsToCart1 } from "../../api/order";
 
 const Cart = ({ history }) => {
     const dispatch = useDispatch();
     const { cartItems } = useSelector((state) => state.cart);
+
+    // React Query mutation for adding Item to cart
+    const addItemToCartMutation = useMutation({
+        mutationFn: (item) => {
+            return addItemsToCart1(item)
+        },
+        onSuccess: (data) => {
+            dispatch(addItemsToCartAction(data))
+        },
+        onError: () => {
+            alert.error(addItemToCartMutation.error.message)
+        }
+    })
 
     const increaseQuantity = (id, quantity, stock) => {
         quantity = quantity + 1;
         if (stock < quantity) {
             return;
         }
-        dispatch(addItemsToCart({ id, quantity }));
+        addItemToCartMutation.mutate({ id, quantity })
     };
 
     const decreaseQuantity = (id, quantity) => {
@@ -24,7 +39,7 @@ const Cart = ({ history }) => {
         if (1 > quantity) {
             return;
         }
-        dispatch(addItemsToCart({ id, quantity }));
+        addItemToCartMutation.mutate({ id, quantity })
     };
 
     const deleteCartItems = (id) => {

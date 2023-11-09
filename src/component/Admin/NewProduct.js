@@ -1,7 +1,5 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useState } from "react";
 import "./newProduct.css";
-import { useSelector, useDispatch } from "react-redux";
-import { clearErrors, createProduct, NEW_PRODUCT_RESET } from "../../slice/product/AdminProductSlice";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
@@ -11,13 +9,12 @@ import StorageIcon from "@material-ui/icons/Storage";
 import SpellcheckIcon from "@material-ui/icons/Spellcheck";
 import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
 import SideBar from "./Sidebar";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProduct1 } from "../../api/product";
 
 const NewProduct = ({ history }) => {
-  const dispatch = useDispatch();
   const alert = useAlert();
-
-  const { loading, error, success } = useSelector((state) => state.Admin);
-
+  const queryClient = useQueryClient()
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState("");
@@ -33,18 +30,19 @@ const NewProduct = ({ history }) => {
     "SmartPhones",
   ];
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-    if (success) {
+  // React Query Mutation for updating product
+  const createProductMutation = useMutation({
+    mutationFn: (updatedData) => createProduct1(updatedData),
+    onSuccess: (data) => {
       alert.success("Product Created Successfully");
+      queryClient.invalidateQueries({ queryKey: ['getProductsAdminQuery'] })
       history.push("/admin/dashboard");
-      dispatch(NEW_PRODUCT_RESET());
+
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
     }
-  }, [dispatch, alert, error, history, success]);
+  })
 
   const createProductSubmitHandler = (e) => {
     e.preventDefault();
@@ -60,7 +58,7 @@ const NewProduct = ({ history }) => {
     images.forEach((image) => {
       myForm.append("images", image);
     });
-    dispatch(createProduct(myForm));
+    createProductMutation.mutate(myForm)
   };
 
   const createProductImagesChange = (e) => {
@@ -169,9 +167,9 @@ const NewProduct = ({ history }) => {
             <Button
               id="createProductBtn"
               type="submit"
-              disabled={loading ? true : false}
+              disabled={createProductMutation.isPending ? true : false}
             >
-              Create
+              {createProductMutation.isPending ? "Creating....." : " Create"}
             </Button>
           </form>
         </div>

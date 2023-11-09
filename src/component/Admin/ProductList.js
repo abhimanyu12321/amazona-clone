@@ -1,13 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import "./productList.css";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  DELETE_PRODUCT_RESET,
-  clearErrors,
-  deleteProduct,
-  getAdminProduct,
-} from "../../slice/product/AdminProductSlice";
 import { Link } from "react-router-dom";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
@@ -15,37 +8,39 @@ import MetaData from "../layout/MetaData";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SideBar from "./Sidebar";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { deleteProduct1, getAdminProduct1 } from "../../api/product";
+import Loader from "../layout/Loader/Loader";
 
 
 const ProductList = ({ history }) => {
-  const dispatch = useDispatch();
-
   const alert = useAlert();
+  const queryClient = useQueryClient()
 
-  const { error, products, isDeleted } = useSelector((state) => state.Admin);
 
+  // React Query for getting all products
+  const getProductsAdminQuery = useQuery({
+    queryKey: ['getProductsAdminQuery'],
+    queryFn: () => getAdminProduct1(),
+  })
 
+  // React Query Mutation for Resetting password
+  const deleteProductMutation = useMutation({
+    mutationFn: (id) => deleteProduct1(id),
+    onSuccess: (data) => {
+      alert.success("Product Deleted Successfully");
+      queryClient.invalidateQueries({ queryKey: ['getProductsAdminQuery'] })
+      history.push("/admin/dashboard");
+
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
+    }
+  })
 
   const deleteProductHandler = (id) => {
-    dispatch(deleteProduct(id));
+    deleteProductMutation.mutate(id)
   };
-
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-
-
-    if (isDeleted) {
-      alert.success("Product Deleted Successfully");
-      history.push("/admin/dashboard");
-      dispatch(DELETE_PRODUCT_RESET());
-    }
-
-    dispatch(getAdminProduct());
-  }, [dispatch, alert, error, history, isDeleted]);
 
   const columns = [
     { field: "id", headerName: "Product ID", minWidth: 100, flex: 0.3 },
@@ -101,8 +96,8 @@ const ProductList = ({ history }) => {
 
   const rows = [];
 
-  products &&
-    products.forEach((item) => {
+  getProductsAdminQuery.data &&
+    getProductsAdminQuery.data.forEach((item) => {
       rows.push({
         id: item._id,
         stock: item.Stock,
@@ -117,7 +112,7 @@ const ProductList = ({ history }) => {
 
       <div className="dashboard">
         <SideBar />
-        <div className="productListContainer">
+        {getProductsAdminQuery.isPending ? <Loader /> : <div className="productListContainer">
           <h1 id="productListHeading">ALL PRODUCTS</h1>
 
           <DataGrid
@@ -128,7 +123,7 @@ const ProductList = ({ history }) => {
             className="productListTable"
             autoHeight
           />
-        </div>
+        </div>}
       </div>
     </>
   );

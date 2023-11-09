@@ -1,23 +1,30 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import "./myOrders.css";
-import { useSelector, useDispatch } from "react-redux";
-import { clearErrors, myOrders } from "../../slice/order/orderSlice";
+import { useSelector } from "react-redux";
+
 import Loader from "../layout/Loader/Loader";
 import { Link } from "react-router-dom";
 import { useAlert } from "react-alert";
 import Typography from "@material-ui/core/Typography";
 import MetaData from "../layout/MetaData";
 import LaunchIcon from "@material-ui/icons/Launch";
+import { useQuery } from "@tanstack/react-query";
+import { myOrders1 } from "../../api/order";
 
 const MyOrders = () => {
-  const dispatch = useDispatch();
-
   const alert = useAlert();
-
-  const { loading, error, orders } = useSelector((state) => state.newOrder);
   const { user } = useSelector((state) => state.User);
 
+  // React Query for getting all orders
+  const getAllOrders = useQuery({
+    queryKey: ['getAllOrders'],
+    queryFn: () => myOrders1(),
+  })
+
+  if (getAllOrders.isError) {
+    alert.error(getAllOrders.error.response.data.message)
+  }
   const columns = [
     { field: "id", headerName: "Order ID", flex: 0.3 },
 
@@ -62,8 +69,8 @@ const MyOrders = () => {
   ];
   const rows = [];
 
-  orders &&
-    orders.forEach((item, index) => {
+  getAllOrders.data &&
+    getAllOrders.data.forEach((item, index) => {
       rows.push({
         itemsQty: item.orderItems.length,
         id: item._id,
@@ -72,20 +79,11 @@ const MyOrders = () => {
       });
     });
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-    dispatch(myOrders());
-  }, [dispatch, alert, error]);
-
   return (
     <>
       <MetaData title={`${user.name} - Orders`} />
 
-      {loading ? (
+      {getAllOrders.isPending ? (
         <Loader />
       ) : (
         <div className="myOrdersPage">

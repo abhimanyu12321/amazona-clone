@@ -1,7 +1,7 @@
 import axios from "axios"
 import { baseURL } from "../baseAPI"
 
-
+// Login user
 export const login1 = async ({ loginEmail, loginPassword }) => {
     const config = { headers: { "Content-Type": "application/json" }, withCredentials: true };
 

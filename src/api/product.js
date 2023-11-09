@@ -23,7 +23,7 @@ export const productData1 = async (id) => {
 
 }
 
-
+// Adding a new review
 export const newReview1 = async (myForm) => {
     const config = {
         headers: { "Content-Type": "application/json" },
@@ -34,3 +34,49 @@ export const newReview1 = async (myForm) => {
 
 }
 
+//  getting Admin products
+export const getAdminProduct1 = async () => {
+    const { data } = await axios.get(`${baseURL}/api/v1/admin/products`, { withCredentials: true })
+    return data.products
+}
+
+// deleting product for Admin
+export const deleteProduct1 = async (id) => {
+    const { data } = await axios.delete(`${baseURL}/api/v1/admin/product/${id}`, { withCredentials: true })
+    return data.success
+}
+
+// updating a product for Admin
+export const updateProduct1 = async ({ id, myForm }) => {
+    const config = {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+    };
+
+    const { data } = await axios.put(`${baseURL}/api/v1/admin/product/${id}`, myForm, config)
+    return data.success
+
+}
+
+//  Adding new Product for Admin
+export const createProduct1 = async (myForm) => {
+    const config = {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+    };
+
+    const { data } = await axios.post(`${baseURL}/api/v1/admin/product/new`, myForm, config)
+    return data
+}
+
+// getting reviews for  Admin
+export const getAllReviews1 = async (id) => {
+    const { data } = await axios.get(`${baseURL}/api/v1/reviews?id=${id}`, { withCredentials: true })
+    return data.reviews
+}
+
+// deleting a Product review for Admin
+export const deleteReviews1 = async ({ reviewId, productId }) => {
+    const { data } = await axios.delete(`${baseURL}/api/v1/reviews?id=${reviewId}&productId=${productId}`, { withCredentials: true })
+    return data.success
+}

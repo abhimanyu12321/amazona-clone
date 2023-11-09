@@ -1,58 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { DataGrid } from "@material-ui/data-grid";
 import "./productReviews.css";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  clearErrors,
-  getAllReviews,
-  deleteReviews,
-  DELETE_REVIEW_RESET
-} from "../../slice/product/AdminProductSlice";
 import { useAlert } from "react-alert";
 import { Button } from "@material-ui/core";
 import MetaData from "../layout/MetaData";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Star from "@material-ui/icons/Star";
 import SideBar from "./Sidebar";
+import { useMutation } from "@tanstack/react-query";
+import { deleteReviews1, getAllReviews1 } from "../../api/product";
 
 const ProductReviews = ({ history }) => {
-  const dispatch = useDispatch();
-
   const alert = useAlert();
-
-  const { error, isRDeleted, reviews, loading } = useSelector(
-    (state) => state.Admin
-  );
-
-
   const [productId, setProductId] = useState("");
 
+  // React Query Mutation for getting product Reviews
+  const getProductReviewsMutation = useMutation({
+    mutationFn: (id) => getAllReviews1(id),
+    onSuccess: (data) => {
+      alert.success("Reviews found Successfully");
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
+    }
+  })
+
+  // React Query Mutation for updating product
+  const deleteProductReviewMutation = useMutation({
+    mutationFn: (ids) => deleteReviews1(ids),
+    onSuccess: (data) => {
+      alert.success("Review Deleted Successfully");
+      history.push("/admin/reviews");
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
+    }
+  })
+
   const deleteReviewHandler = (reviewId) => {
-    dispatch(deleteReviews({ reviewId, productId }));
+    deleteProductReviewMutation.mutate({ reviewId, productId })
   };
 
   const productReviewsSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(getAllReviews(productId));
+    getProductReviewsMutation.mutate(productId)
   };
 
-  useEffect(() => {
-    if (productId.length === 24) {
-      dispatch(getAllReviews(productId));
-    }
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-
-
-
-    if (isRDeleted) {
-      alert.success("Review Deleted Successfully");
-      history.push("/admin/reviews");
-      dispatch(DELETE_REVIEW_RESET());
-    }
-  }, [dispatch, alert, error, history, isRDeleted, productId]);
 
   const columns = [
     { field: "id", headerName: "Review ID", minWidth: 200, flex: 0.5 },
@@ -110,8 +103,8 @@ const ProductReviews = ({ history }) => {
 
   const rows = [];
 
-  reviews &&
-    reviews.forEach((item) => {
+  getProductReviewsMutation.data &&
+    getProductReviewsMutation.data.forEach((item) => {
       rows.push({
         id: item._id,
         rating: item.rating,
@@ -148,14 +141,14 @@ const ProductReviews = ({ history }) => {
               id="createProductBtn"
               type="submit"
               disabled={
-                loading ? true : false || productId === "" ? true : false
+                getProductReviewsMutation.isPending ? true : false || productId === "" ? true : false
               }
             >
-              Search
+              {getProductReviewsMutation.isPending ? "Searching....." : "Search"}
             </Button>
           </form>
 
-          {reviews && reviews.length > 0 ? (
+          {getProductReviewsMutation.data &&
             <DataGrid
               rows={rows}
               columns={columns}
@@ -164,9 +157,7 @@ const ProductReviews = ({ history }) => {
               className="productListTable"
               autoHeight
             />
-          ) : (
-            <h1 className="productReviewsFormHeading">No Reviews Found</h1>
-          )}
+          }
         </div>
       </div>
     </>

@@ -25,7 +25,7 @@ const UpdateUser = ({ history, match }) => {
 
   const id = match.params.id;
 
-  // React Query Mutation for Resetting password
+  // React Query Mutation for updating user
   const updateUserMutation = useMutation({
     mutationFn: (updatedData) => updateUser1(updatedData),
     onSuccess: (data) => {

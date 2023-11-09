@@ -1,53 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import MetaData from "../layout/MetaData";
 import { Link } from "react-router-dom";
 import { Typography } from "@material-ui/core";
 import SideBar from "./Sidebar";
-import {
-  clearErrors,
-  updateOrder,
-  UPDATE_ORDER_RESET
-} from "../../slice/order/adminOrderSlice";
-import getOrderDetailsAdmin from "../../slice/order/adminOrderSlice"
-import { useSelector, useDispatch } from "react-redux";
 import Loader from "../layout/Loader/Loader";
 import { useAlert } from "react-alert";
 import AccountTreeIcon from "@material-ui/icons/AccountTree";
 import { Button } from "@material-ui/core";
 import "./processOrder.css";
+import { getOrderDetails1, updateOrder1 } from "../../api/order";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const ProcessOrder = ({ history, match }) => {
-  const { order, error, loading, isUpdated } = useSelector((state) => state.adminOrder);
+  const queryClient = useQueryClient()
   const id = match.params.id
-
+  const [status, setStatus] = useState("");
+  const alert = useAlert();
+  // React Query Mutation for deleting a order for Admin
+  const processOrderAdminMutation = useMutation({
+    mutationFn: (data) => updateOrder1(data),
+    onSuccess: (data) => {
+      alert.success("Order Updated Successfully");
+      queryClient.invalidateQueries({ queryKey: ['getOrderDetailUserQuery'] })
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
+    }
+  })
 
   const updateOrderSubmitHandler = (e) => {
     e.preventDefault();
 
     const myForm = new FormData();
-
     myForm.set("status", status);
-
-    dispatch(updateOrder({ id, myForm }));
+    processOrderAdminMutation.mutate({ id, myForm })
   };
 
-  const dispatch = useDispatch();
-  const alert = useAlert();
 
-  const [status, setStatus] = useState("");
 
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
+  // Get Order Detail query
+  const getOrderDetailUserQuery = useQuery({
+    queryKey: ['getOrderDetailUserQuery', match.params.id],
+    queryFn: () => getOrderDetails1(match.params.id),
+  })
+  const order = getOrderDetailUserQuery.isSuccess ? getOrderDetailUserQuery.data : {}
 
-    if (isUpdated) {
-      alert.success("Order Updated Successfully");
-      dispatch(UPDATE_ORDER_RESET());
-    }
-    dispatch(getOrderDetailsAdmin(match.params.id));
-  }, [dispatch, alert, error, match.params.id, isUpdated]);
+  if (getOrderDetailUserQuery.isError) {
+    alert.error(getOrderDetailUserQuery.error.message)
+  }
+
+
 
   return (
     <>
@@ -55,7 +57,7 @@ const ProcessOrder = ({ history, match }) => {
       <div className="dashboard">
         <SideBar />
         <div className="newProductContainer">
-          {loading ? (
+          {getOrderDetailUserQuery.isPending ? (
             <Loader />
           ) : (
             <div
@@ -175,7 +177,7 @@ const ProcessOrder = ({ history, match }) => {
                     id="createProductBtn"
                     type="submit"
                     disabled={
-                      loading ? true : false || status === "" ? true : false
+                      processOrderAdminMutation.isPending ? true : false || status === "" ? true : false
                     }
                   >
                     Process

@@ -1,25 +1,25 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import CheckoutSteps from "../Cart/CheckoutSteps";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import MetaData from "../layout/MetaData";
 import { useAlert } from "react-alert";
 import "./payment.css";
-import { clearErrors, createOrder } from "../../slice/order/orderSlice";
 import { Typography } from "@material-ui/core";
 import CreditCardIcon from "@material-ui/icons/CreditCard";
 import EventIcon from "@material-ui/icons/Event";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createOrder1 } from "../../api/order";
+import Loader from "../layout/Loader/Loader";
 
 
 const Payment = ({ history }) => {
   const orderInfo = JSON.parse(sessionStorage.getItem("orderInfo"));
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient()
   const alert = useAlert();
   const payBtn = useRef(null);
-
-
   const { shippingInfo, cartItems } = useSelector((state) => state.cart);
-  const { error } = useSelector((state) => state.newOrder);
+
 
   function random(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min)
@@ -38,24 +38,25 @@ const Payment = ({ history }) => {
   };
 
   console.log(order)
+
+  // React Query Mutation for Creating a Order
+  const createOrderMutation = useMutation({
+    mutationFn: (Data) => createOrder1(Data),
+    onSuccess: (data) => {
+      alert.success("Order placed Successfully");
+      queryClient.invalidateQueries({ queryKey: ['getAllOrders'] })
+      history.push("/success");
+    },
+    onError: (err) => {
+      alert.error(err.response.data.message)
+    }
+  })
   const submitHandler = async (e) => {
     e.preventDefault();
-
     payBtn.current.disabled = true;
-
-    dispatch(createOrder(order));
-
+    createOrderMutation.mutate(order)
     payBtn.current.disabled = false;
-    history.push("/success");
-
   };
-
-  useEffect(() => {
-    if (error) {
-      alert.error(error);
-      dispatch(clearErrors());
-    }
-  }, [dispatch, error, alert]);
 
   return (
     <>
@@ -63,7 +64,7 @@ const Payment = ({ history }) => {
       <CheckoutSteps activeStep={2} />
       <div className="paymentContainer">
 
-        <form className="paymentForm" onSubmit={(e) => submitHandler(e)}>
+        {createOrderMutation.isPending ? <Loader /> : <form className="paymentForm" onSubmit={(e) => submitHandler(e)}>
           <Typography>Card Info</Typography>
           <div>
             <CreditCardIcon />
@@ -84,7 +85,7 @@ const Payment = ({ history }) => {
             ref={payBtn}
             className="paymentFormBtn"
           />
-        </form>
+        </form>}
 
       </div>
     </>

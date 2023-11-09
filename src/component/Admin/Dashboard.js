@@ -1,24 +1,16 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Sidebar from "./Sidebar.js";
 import "./dashboard.css";
 import { Typography } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { Doughnut, Line } from "react-chartjs-2";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  getAdminProduct,
-} from "../../slice/product/AdminProductSlice";
-import { getAllOrders } from "../../slice/order/adminOrderSlice.js";
 import MetaData from "../layout/MetaData";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUsers1 } from "../../api/user.js";
+import { getAdminProduct1 } from "../../api/product.js";
+import { myOrders1 } from "../../api/order.js";
 
 const Dashboard = () => {
-  const dispatch = useDispatch();
-
-  const { products } = useSelector((state) => state.Admin);
-
-  const { orders } = useSelector((state) => state.adminOrder);
 
   // React Query for getting all users
   const getUsersAdminQuery = useQuery({
@@ -26,23 +18,31 @@ const Dashboard = () => {
     queryFn: () => getAllUsers1(),
   })
 
+
+  // React Query for getting all products
+  const getProductsAdminQuery = useQuery({
+    queryKey: ['getProductsAdminQuery'],
+    queryFn: () => getAdminProduct1(),
+  })
+
+  // React Query for getting all orders
+  const getAllOrders = useQuery({
+    queryKey: ['getAllOrders'],
+    queryFn: () => myOrders1(),
+  })
+
   let outOfStock = 0;
 
-  products &&
-    products.forEach((item) => {
+  getProductsAdminQuery.data &&
+    getProductsAdminQuery.data.forEach((item) => {
       if (item.Stock === 0) {
         outOfStock += 1;
       }
     });
 
-  useEffect(() => {
-    dispatch(getAdminProduct());
-    dispatch(getAllOrders());
-  }, [dispatch]);
-
   let totalAmount = 0;
-  orders &&
-    orders.forEach((item) => {
+  getAllOrders.data &&
+    getAllOrders.data.forEach((item) => {
       totalAmount += item.totalPrice;
     });
 
@@ -58,16 +58,18 @@ const Dashboard = () => {
     ],
   };
 
-  const doughnutState = {
+
+  const doughnutState = getProductsAdminQuery.isSuccess ? {
     labels: ["Out of Stock", "InStock"],
     datasets: [
       {
         backgroundColor: ["#00A6B4", "#6800B4"],
         hoverBackgroundColor: ["#4B5000", "#35014F"],
-        data: [outOfStock, products.length - outOfStock],
+        data: [outOfStock, getProductsAdminQuery.data.length - outOfStock],
       },
     ],
-  };
+  } : {}
+
 
 
   return (
@@ -87,11 +89,11 @@ const Dashboard = () => {
           <div className="dashboardSummaryBox2">
             <Link to="/admin/products">
               <p>Product</p>
-              <p>{products && products.length}</p>
+              <p>{getProductsAdminQuery.data && getProductsAdminQuery.data.length}</p>
             </Link>
             <Link to="/admin/orders">
               <p>Orders</p>
-              <p>{orders && orders.length}</p>
+              <p>{getAllOrders.data && getAllOrders.data.length}</p>
             </Link>
             <Link to="/admin/users">
               <p>Users</p>
@@ -105,7 +107,7 @@ const Dashboard = () => {
         </div>
 
         <div className="doughnutChart">
-          <Doughnut data={doughnutState} />
+          {getProductsAdminQuery.data && <Doughnut data={doughnutState} />}
         </div>
       </div>
     </div>
