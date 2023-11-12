@@ -6,6 +6,10 @@
   scroll-behavior: smooth;
 }
 
+#root {
+  background-color: #f2f2f2;
+}
+
 .primary-color {
   color: #ff9900;
 }
