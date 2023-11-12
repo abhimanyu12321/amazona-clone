@@ -1,70 +1,98 @@
-import React from 'react'
-import './header.css'
-import { ReactNavbar } from "overlay-navbar";
-import logo from "../../../images/logo.png";
+import React, { useState } from 'react'
 import { MdAccountCircle } from "react-icons/md";
-import { MdSearch } from "react-icons/md";
 import { MdAddShoppingCart } from "react-icons/md";
-
+import { BiSearch } from 'react-icons/bi'
+import { Link } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 export default function Header() {
-    const options = {
-        burgerColorHover: "#eb4034",
-        logo,
-        logoWidth: "20vmax",
-        navColor1: "white",
-        logoHoverSize: "10px",
-        logoHoverColor: "#eb4034",
-        link1Text: "Home",
-        link2Text: "Products",
-        link3Text: "Contact",
-        link4Text: "About",
-        link1Url: "/",
-        link2Url: "/products",
-        link3Url: "/contact",
-        link4Url: "/about",
-        link1Size: "1.3vmax",
-        link1Color: "rgba(35, 35, 35,0.8)",
-        nav1justifyContent: "flex-end",
-        nav2justifyContent: "flex-end",
-        nav3justifyContent: "flex-start",
-        nav4justifyContent: "flex-start",
-        link1ColorHover: "#eb4034",
-        link1Margin: "1vmax",
-        profileIconUrl: "/login",
-        profileIconColor: "rgba(35, 35, 35,0.8)",
-        searchIconColor: "rgba(35, 35, 35,0.8)",
-        cartIconColor: "rgba(35, 35, 35,0.8)",
-        profileIconColorHover: "#eb4034",
-        searchIconColorHover: "#eb4034",
-        cartIconColorHover: "#eb4034",
-        cartIconMargin: "1vmax",
-        profileIcon: true,
-        ProfileIconElement: MdAccountCircle,
-        searchIcon: true,
-        SearchIconElement: MdSearch,
-        cartIcon: true,
-        CartIconElement: MdAddShoppingCart,
-        logoAnimationTime: 0,
-        link1AnimationTime: 0,
-        link2AnimationTime: 0,
-        link3AnimationTime: 0,
-        link4AnimationTime: 0,
-        link1Transition: 0,
-        link2Transition: 0,
-        link3Transition: 0,
-        link4Transition: 0,
-        nav1Transition: 0,
-        nav2Transition: 0,
-        nav3Transition: 0,
-        nav4Transition: 0,
-        searchIconAnimationTime: 0,
-        cartIconAnimationTime: 0,
-        profileIconAnimationTime: 0
-    };
-
+    const history = useHistory();
+    const [keyword, setKeyword] = useState("");
+    function searchSubmitHandler(e) {
+        e.preventDefault();
+        if (keyword.trim()) {
+            history.push(`/products/${keyword}`);
+        } else {
+            history.push("/products");
+        }
+    }
     return (
+        <>
+            <div className="hidden md:flex header w-[100vw] bg-[#0f1111]  justify-between items-center h-[5rem] text-white gap-[20px] fixed z-10 ">
+                <div className='headerleft flex justify-center items-center gap-[20px] text-[40px] p-[14px]'>
+                    <Link to="/" className="headercolorclass text-white list-none no-underline">
+                        <span className='headerleftlogo hover:border hover:border-solid hover:border-white cursor-pointer'>amazon.in</span>
+                    </Link>
+                    <Link to="/products" className="headercolorclass text-white list-none no-underline">
+                        <div className='headerleftproducts hover:border hover:border-solid hover:border-white cursor-pointer hover:p-[0.2rem] text-[30px]'>Products</div>
+                    </Link>
 
-        <ReactNavbar {...options} />
+                </div>
+                <div className="headermid max-w-[700px] flex-grow-[1]">
+                    <form className="headersearchBox flex justify-center items-center hover:border-[3px] hover:border-solid hover:border-[#ff9900] hover:rounded-[14px]" onSubmit={searchSubmitHandler}>
+                        <input
+                            type="text"
+                            placeholder="Search Amazon.in"
+                            onChange={(e) => setKeyword(e.target.value)}
+                            className='py-[15px] px-[4px] w-[100%] border rounded-tl-[10px] rounded-tr-none rounded-bl-[10px] rounded-br-none box-border outline-none text-black'
+                        />
+                        <button type="submit"
+                            className='border rounded-tr-[10px] rounded-tl-none rounded-br-[10px] rounded-bl-none bg-[#ff9900] py-[19px] px-[1px] w-[50px] cursor-pointer transition-all hover:bg-[#ff7000] flex justify-center items-center'
+                        >
+                            <BiSearch />
+                        </ button>
+
+                    </form>
+
+                </div>
+                <div className="headerright flex justify-center items-center gap-[20px] text-[38px] pr-[40px]">
+                    <Link to="/cart" className="headercolorclass text-white list-none no-underline">
+                        <MdAddShoppingCart className='headercarticon hover:border hover:border-solid hover:border-white cursor-pointer p-[0.3rem] text-[55px]' />
+                    </Link>
+
+                    <Link to="/login" className="headercolorclass text-white list-none no-underline">
+                        <MdAccountCircle className='headerusericon hover:border hover:border-solid hover:border-white cursor-pointer p-[0.3rem] text-[55px]' />
+                    </Link>
+                </div>
+            </div>
+
+            {/* For Mobile view */}
+            <div className="flex flex-col md:hidden header w-[100vw] bg-[#0f1111]  justify-center items-center text-white gap-[20px] fixed z-10 ">
+                <div className='headerleft flex justify-around items-center gap-[10px] text-[25px] md:text-[25px] pt-[4px]'>
+                    <Link to="/" className="headercolorclass text-white list-none no-underline">
+                        <span className='headerleftlogo hover:border hover:border-solid hover:border-white cursor-pointer'>amazon.in</span>
+                    </Link>
+                    <Link to="/products" className="headercolorclass text-white list-none no-underline">
+                        <div className='headerleftproducts hover:border hover:border-solid hover:border-white cursor-pointer hover:p-[0.2rem]'>Products</div>
+                    </Link>
+                    <Link to="/cart" className="headercolorclass text-white list-none no-underline">
+                        <MdAddShoppingCart className='headercarticon hover:border hover:border-solid hover:border-white cursor-pointer text-[40px]' />
+                    </Link>
+
+                    <Link to="/login" className="headercolorclass text-white list-none no-underline">
+                        <MdAccountCircle className='headerusericon hover:border hover:border-solid hover:border-white cursor-pointer text-[40px]' />
+                    </Link>
+
+                </div>
+                <div className="headermid mb-[20px] max-w-[700px] flex-grow-[1]">
+                    <form className="headersearchBox flex justify-center items-center hover:border-[3px] hover:border-solid hover:border-[#ff9900] hover:rounded-[14px]" onSubmit={searchSubmitHandler}>
+                        <input
+                            type="text"
+                            placeholder="Search Amazon.in"
+                            onChange={(e) => setKeyword(e.target.value)}
+                            className='py-[15px] px-[4px] w-[100%] border rounded-tl-[10px] rounded-tr-none rounded-bl-[10px] rounded-br-none box-border outline-none text-black'
+                        />
+                        <button type="submit"
+                            className='border rounded-tr-[10px] rounded-tl-none rounded-br-[10px] rounded-bl-none bg-[#ff9900] py-[19px] px-[1px] w-[50px] cursor-pointer transition-all hover:bg-[#ff7000] flex justify-center items-center'
+                        >
+                            <BiSearch />
+                        </ button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </>
     )
 }

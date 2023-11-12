@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./header.css";
 import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 import Backdrop from "@material-ui/core/Backdrop";
 import DashboardIcon from "@material-ui/icons/Dashboard";
@@ -75,7 +74,7 @@ const UserOptions = ({ user }) => {
 
   return (
     <>
-      <Backdrop open={open} style={{ zIndex: "10" }} />
+      <Backdrop open={false} style={{ zIndex: "1" }} />
       <SpeedDial
         ariaLabel="SpeedDial tooltip example"
         onClose={() => setOpen(false)}
@@ -83,10 +82,10 @@ const UserOptions = ({ user }) => {
         style={{ zIndex: "11" }}
         open={open}
         direction="down"
-        className="speedDial"
+        className="speedDial fixed right-[14px] top-[4px]"
         icon={
           <img
-            className="speedDialIcon"
+            className="speedDialIcon w-[50px] h-[50px] rounded-[100%]"
             src={user && user.avatar.url ? user.avatar.url : profile}
             alt="Profile"
           />
