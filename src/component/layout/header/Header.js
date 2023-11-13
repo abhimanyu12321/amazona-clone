@@ -80,7 +80,8 @@ export default function Header() {
                             type="text"
                             placeholder="Search Amazon.in"
                             onChange={(e) => setKeyword(e.target.value)}
-                            className='py-[15px] px-[4px] w-[100%] border rounded-tl-[10px] rounded-tr-none rounded-bl-[10px] rounded-br-none box-border outline-none text-black'
+                            className='py-[15px] px-[4px] w-[100%] border rounded-tl-[10px] rounded-tr-none rounded-bl-[10px] rounded-br-none box-border  text-black'
+                            style={{ outline: "none", }}
                         />
                         <button type="submit"
                             className='border rounded-tr-[10px] rounded-tl-none rounded-br-[10px] rounded-bl-none bg-[#ff9900] py-[19px] px-[1px] w-[50px] cursor-pointer transition-all hover:bg-[#ff7000] flex justify-center items-center'
