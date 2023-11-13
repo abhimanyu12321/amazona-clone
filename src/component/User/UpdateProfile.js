@@ -83,7 +83,7 @@ const UpdateProfile = ({ history }) => {
       ) : (
         <>
           <MetaData title="Update Profile" />
-          <div className="updateProfileContainer">
+          <div className="updateProfileContainer pt-[10rem]">
             <div className="updateProfileBox">
               <h2 className="updateProfileHeading">Update Profile</h2>
 

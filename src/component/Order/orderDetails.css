@@ -1,11 +1,11 @@
 .orderDetailsPage {
-  background-color: white;
+  padding-top: 6rem;
 }
 
 .orderDetailsContainer > h1 {
   font: 300 3vmax "Roboto";
   margin: 4vmax 0;
-  color: tomato;
+  color: #ff9900;
 }
 
 .orderDetailsContainer {

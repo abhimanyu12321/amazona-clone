@@ -1,14 +1,9 @@
 .updateProfileContainer {
   width: 100vw;
-  height: 100vh;
   max-width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgb(231, 231, 231);
-  /* position: fixed; */
-  top: 0%;
-  left: 0;
 }
 
 .updateProfileBox {
@@ -94,7 +89,7 @@
 
 .updateProfileBtn {
   border: none;
-  background-color: tomato;
+  background-color: #ff9900;
   color: white;
   font: 300 0.9vmax "Roboto";
   width: 100%;
@@ -107,7 +102,7 @@
 }
 
 .updateProfileBtn:hover {
-  background-color: rgb(179, 66, 46);
+  background-color: #ff7000;
 }
 
 @media screen and (max-width: 600px) {

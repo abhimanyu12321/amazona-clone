@@ -2,7 +2,7 @@
   background-color: rgb(255, 255, 255);
   display: flex;
   flex-direction: column;
-  padding: 4rem 0;
+  padding-top: 10rem;
 }
 
 .sidebar > a:first-child {
@@ -14,7 +14,7 @@
 }
 
 .sidebar > a > img:hover {
-  filter: drop-shadow(0 0 10px tomato);
+  filter: drop-shadow(0 0 10px #ff9900);
 }
 .sidebar a {
   text-decoration: none;
@@ -24,7 +24,7 @@
   transition: all 0.5s;
 }
 .sidebar a:hover {
-  color: tomato;
+  color: #ff9900;
   transform: scale(1.1);
 }
 

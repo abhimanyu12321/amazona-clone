@@ -132,7 +132,7 @@ const LoginSignUp = ({ history, location }) => {
 
   return (
     <>
-      <div className="LoginSignUpContainer">
+      <div className="LoginSignUpContainer pt-[9rem]">
         <div className="LoginSignUpBox">
           <div>
             <div className="login_signUp_toggle">

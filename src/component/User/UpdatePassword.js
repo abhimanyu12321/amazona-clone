@@ -42,7 +42,7 @@ const UpdatePassword = ({ history }) => {
 
     <>
       <MetaData title="Change Password" />
-      <div className="updatePasswordContainer">
+      <div className="updatePasswordContainer pt-[10rem] md:pt-[8rem]">
         <div className="updatePasswordBox">
           <h2 className="updatePasswordHeading">Update Password</h2>
 

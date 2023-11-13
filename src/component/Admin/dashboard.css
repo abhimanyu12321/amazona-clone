@@ -3,11 +3,11 @@
   max-width: 100%;
   display: grid;
   grid-template-columns: 1fr 5fr;
+  padding-top: 4rem;
 }
 
 .dashboardContainer {
   border-left: 1px solid rgba(0, 0, 0, 0.13);
-  background-color: rgb(255, 255, 255);
   padding: 3rem 0;
 }
 
@@ -30,7 +30,7 @@
   justify-content: center;
 }
 .dashboardSummary > div > p {
-  background-color: rgba(70, 117, 218, 0.932);
+  background-color: #ff9900;
   color: white;
   font: 300 1.3rem "Roboto";
   text-align: center;
