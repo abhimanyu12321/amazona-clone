@@ -18,7 +18,8 @@ import {
 } from "@material-ui/core";
 
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { Carousel } from 'react-responsive-carousel';
+// import { Carousel } from 'react-responsive-carousel';
+import { Carousel } from 'flowbite-react';
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { newReview1, productData1 } from "../../api/product.js";
 import { addItemsToCart1 } from "../../api/order.js";
@@ -136,12 +137,12 @@ const ProductDetails = ({ match }) => {
         <>
           <MetaData title={`${data && data.product.name} -- ECOMMERCE`} />
           <div className="ProductDetails">
-            <div >
-              <Carousel width="80%" autoPlay={true} infiniteLoop={true} interval="2000">
+            <div className="h-[480px]  md:h-[550px] ">
+              <Carousel slideInterval={3000} indicators={true}>
                 {data.product.images &&
                   data.product.images.map((item, i) => (
                     <img
-                      className="CarouselImage"
+                      className="CarouselImage md:w-[30vmax]"
                       key={i}
                       src={item.url}
                       alt={`${i} Slide`}
@@ -158,7 +159,7 @@ const ProductDetails = ({ match }) => {
               </div>
               <div className="detailsBlock-2">
                 <Rating {...options} />
-                <span className="detailsBlock-2-span">
+                <span className="detailsBlock-2-span" style={{ fontWeight: "bold" }}>
                   {" "}
                   ({data.product.numOfReviews} Reviews)
                 </span>
@@ -187,7 +188,7 @@ const ProductDetails = ({ match }) => {
                 </p>
               </div>
 
-              <div className="detailsBlock-4">
+              <div className="detailsBlock-4" >
                 Description : <p>{data.product.description}</p>
               </div>
 

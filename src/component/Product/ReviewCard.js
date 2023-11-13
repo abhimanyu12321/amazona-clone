@@ -14,7 +14,7 @@ const ReviewCard = ({ review }) => {
       <img src={profilePng} alt="User" />
       <p>{review.name}</p>
       <Rating {...options} />
-      <span className="reviewCardComment">{review.comment}</span>
+      <span className="reviewCardComment" style={{ color: "black" }}>{review.comment}</span>
     </div>
   );
 };
