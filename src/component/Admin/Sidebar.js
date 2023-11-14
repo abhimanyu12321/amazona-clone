@@ -1,6 +1,5 @@
 import React from "react";
 import "./sidebar.css";
-import logo from "../../images/logo.png";
 import { Link } from "react-router-dom";
 import PostAddIcon from "@material-ui/icons/PostAdd";
 import AddIcon from "@material-ui/icons/Add";

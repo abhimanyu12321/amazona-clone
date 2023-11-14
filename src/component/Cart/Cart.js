@@ -12,7 +12,6 @@ import { addItemsToCart1 } from "../../api/order";
 const Cart = ({ history }) => {
     const dispatch = useDispatch();
     const { cartItems } = useSelector((state) => state.cart);
-
     // React Query mutation for adding Item to cart
     const addItemToCartMutation = useMutation({
         mutationFn: (item) => {
@@ -61,7 +60,7 @@ const Cart = ({ history }) => {
                 </div>
             ) : (
                 <>
-                    <div className="cartPage">
+                    <div className="cartPage pt-[10rem] md:pt-[6rem]">
                         <div className="cartHeader">
                             <p>Product</p>
                             <p>Quantity</p>

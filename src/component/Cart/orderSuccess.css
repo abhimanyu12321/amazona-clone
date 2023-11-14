@@ -1,8 +1,7 @@
 .orderSuccess {
   margin: auto;
   text-align: center;
-  padding: 10vmax;
-  height: 50vh;
+  height: 56vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -10,7 +9,7 @@
 }
 .orderSuccess > svg {
   font-size: 7vmax;
-  color: tomato;
+  color: #ff9900;
 }
 .orderSuccess > p {
   font-size: 2vmax;

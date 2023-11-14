@@ -1,6 +1,9 @@
 .MuiStepConnector-line {
   display: none !important;
 }
+.MuiStepper-root {
+  padding-top: 10rem;
+}
 
 .MuiStepConnector-root {
   height: 1px;
@@ -9,5 +12,5 @@
 
 .MuiStepConnector-active,
 .MuiStepConnector-completed {
-  background-color: tomato;
+  background-color: #ff9900;
 }

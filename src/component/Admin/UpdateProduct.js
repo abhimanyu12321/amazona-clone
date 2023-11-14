@@ -112,9 +112,9 @@ const UpdateProduct = ({ history, match }) => {
       <MetaData title="Create Product" />
       <div className="dashboard">
         <SideBar />
-        <div className="newProductContainer">
+        <div className="newProductContainer ">
           <form
-            className="createProductForm"
+            className="createProductForm "
             encType="multipart/form-data"
             onSubmit={updateProductSubmitHandler}
           >

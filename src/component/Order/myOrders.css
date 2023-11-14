@@ -1,7 +1,6 @@
 .myOrdersPage {
   width: 100vw;
   max-width: 100%;
-  padding: 0 7vmax;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -33,11 +32,11 @@
 }
 
 .myOrdersTable a:hover {
-  color: tomato;
+  color: #ff9900;
 }
 
 .MuiDataGrid-columnHeader {
-  background-color: tomato;
+  background-color: #ff9900;
   padding: 1vmax !important;
 }
 
@@ -50,10 +49,9 @@
   display: none !important;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 720px) {
   .myOrdersPage {
-    padding: 0;
-    height: 93vh;
+    width: 100vw;
   }
 
   #myOrdersHeading {
@@ -62,14 +60,14 @@
   }
 
   .myOrdersTable div {
-    font: 300 4vw "Roboto";
+    font: 300 3vw "Roboto";
   }
 
   .MuiDataGrid-columnHeader {
-    padding: 20px !important;
+    padding: 6px 0px !important;
   }
 
   .MuiDataGrid-columnHeader div {
-    font: 500 5vw "Roboto" !important;
+    font: 300 3vw "Roboto" !important;
   }
 }

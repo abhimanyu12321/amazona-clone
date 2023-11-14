@@ -1,6 +1,5 @@
 .confirmOrderPage {
   height: 100vh;
-  background-color: white;
   display: grid;
   grid-template-columns: 6fr 3fr;
 }
@@ -109,7 +108,7 @@
 }
 
 .orderSummary > button {
-  background-color: tomato;
+  background-color: #ff9900;
   color: white;
   width: 100%;
   padding: 1vmax;
@@ -121,7 +120,7 @@
 }
 
 .orderSummary > button:hover {
-  background-color: rgb(192, 71, 50);
+  background-color: #ff7000;
 }
 
 @media screen and (max-width: 600px) {

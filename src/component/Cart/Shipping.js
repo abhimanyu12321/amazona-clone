@@ -42,7 +42,7 @@ const Shipping = ({ history }) => {
     <>
       <MetaData title="Shipping Details" />
 
-      <CheckoutSteps activeStep={0} />
+      <CheckoutSteps activeStep={0} className="pt-[10rem]" />
 
       <div className="shippingContainer">
         <div className="shippingBox">

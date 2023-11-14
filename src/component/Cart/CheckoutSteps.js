@@ -23,11 +23,13 @@ const CheckoutSteps = ({ activeStep }) => {
 
   const stepStyles = {
     boxSizing: "border-box",
+    paddingTop: "10rem",
+    backgroundColor: "#f2f2f2"
   };
 
   return (
     <>
-      <Stepper alternativeLabel activeStep={activeStep} style={stepStyles}>
+      <Stepper alternativeLabel activeStep={activeStep} style={stepStyles} >
         {steps.map((item, index) => (
           <Step
             key={index}

@@ -26,12 +26,12 @@ const MyOrders = () => {
     alert.error(getAllOrders.error.response.data.message)
   }
   const columns = [
-    { field: "id", headerName: "Order ID", flex: 0.3 },
+    { field: "id", headerName: "Order ID", flex: 0.2 },
 
     {
       field: "status",
       headerName: "Status",
-      flex: 0.5,
+      flex: 0.2,
       cellClassName: (params) => {
         return params.getValue(params.id, "status") === "Delivered"
           ? "greenColor"
@@ -42,19 +42,19 @@ const MyOrders = () => {
       field: "itemsQty",
       headerName: "Items Qty",
       type: "number",
-      flex: 0.3,
+      flex: 0.2,
     },
 
     {
       field: "amount",
       headerName: "Amount",
       type: "number",
-      flex: 0.5,
+      flex: 0.2,
     },
 
     {
       field: "actions",
-      flex: 0.3,
+      flex: 0.2,
       headerName: "Actions",
       type: "number",
       sortable: false,
@@ -86,7 +86,7 @@ const MyOrders = () => {
       {getAllOrders.isPending ? (
         <Loader />
       ) : (
-        <div className="myOrdersPage">
+        <div className="myOrdersPage pt-[16rem] md:pt-[8rem] flex">
           <DataGrid
             rows={rows}
             columns={columns}

@@ -8,7 +8,6 @@
 }
 
 .shippingBox {
-  background-color: white;
   width: 25vw;
   height: 90vh;
   box-sizing: border-box;
@@ -63,7 +62,7 @@
 
 .shippingBtn {
   border: none;
-  background-color: tomato;
+  background-color: #ff9900;
   color: white;
   font: 300 1vmax "Roboto";
   width: 100%;
@@ -75,13 +74,12 @@
 }
 
 .shippingBtn:hover {
-  background-color: rgb(179, 66, 46);
+  background-color: #ff7000;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 768px) {
   .shippingBox {
     width: 100vw;
-    height: 95vh;
   }
 
   .shippingHeading {

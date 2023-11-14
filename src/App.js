@@ -35,8 +35,6 @@ import UsersList from "./component/Admin/UsersList";
 import UpdateUser from "./component/Admin/UpdateUser";
 import ProductReviews from "./component/Admin/ProductReviews";
 import Payment from './component/Cart/Payment';
-import Contact from "./component/layout/Contact/Contact";
-import About from "./component/layout/About/About";
 import NotFound from "./component/layout/Not Found/NotFound";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { useMutation } from '@tanstack/react-query';
@@ -72,9 +70,6 @@ function App() {
       <Switch>
 
         <Route exact path="/" component={Home} />
-        <Route exact path="/contact" component={Contact} />
-
-        <Route exact path="/about" component={About} />
         <Route exact path="/product/:id" component={ProductDetails} />
         <Route exact path="/products" component={Products} />
         <Route exact path="/search" component={Search} />
