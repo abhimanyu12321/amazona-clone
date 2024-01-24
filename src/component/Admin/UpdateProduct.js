@@ -77,19 +77,12 @@ const UpdateProduct = ({ history, match }) => {
     myForm.set("description", description);
     myForm.set("category", category);
     myForm.set("Stock", Stock);
-    console.log("images during form submission : ", images)
-    images.forEach((image) => {
-      myForm.append("images", image);
-    });
+    myForm.set("images", images.join("    "))
     updateProductMutation.mutate({ id, myForm })
   };
 
   const updateProductImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    console.log(files)
-    setImages([]);
-    setImagesPreview([]);
-    setOldImages([]);
     console.log("images before foreach loop : ", images)
     files.forEach((file) => {
       const reader = new FileReader();
@@ -186,6 +179,7 @@ const UpdateProduct = ({ history, match }) => {
                 accept="image/*"
                 onChange={updateProductImagesChange}
                 multiple
+                required
               />
             </div>
 

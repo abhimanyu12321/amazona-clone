@@ -22,6 +22,7 @@ const NewProduct = ({ history }) => {
   const [Stock, setStock] = useState(0);
   const [images, setImages] = useState([]);
   const [imagesPreview, setImagesPreview] = useState([]);
+  console.log(images, imagesPreview)
 
   const categories = [
     "Footwear",
@@ -54,18 +55,12 @@ const NewProduct = ({ history }) => {
     myForm.set("description", description);
     myForm.set("category", category);
     myForm.set("Stock", Stock);
-
-    images.forEach((image) => {
-      myForm.append("images", image);
-    });
+    myForm.set("images", images.join("    "))
     createProductMutation.mutate(myForm)
   };
 
   const createProductImagesChange = (e) => {
     const files = Array.from(e.target.files);
-
-    setImages([]);
-    setImagesPreview([]);
 
     files.forEach((file) => {
       const reader = new FileReader();
@@ -155,6 +150,7 @@ const NewProduct = ({ history }) => {
                 accept="image/*"
                 onChange={createProductImagesChange}
                 multiple="multiple"
+                required
               />
             </div>
 

@@ -1,4 +1,4 @@
-export const baseURL = "https://shopping-app-backend-six.vercel.app"
+export const baseURL = "http://localhost:4000"
 
 // vercel backend deploy url https://shopping-app-backend-six.vercel.app
 
