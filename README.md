@@ -28,43 +28,21 @@ The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+ ### Some screenshot of App
+ 
 
-### `npm run eject`
+![Screenshot 2023-11-16 101629](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/558223f2-1d42-479a-a71b-0cbd7d555c31)
+![Screenshot 2023-11-16 102055](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/98fc4b17-e1d9-485a-b471-e1318ac9d05b)
+![Screenshot 2023-11-16 102200](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/3b49b815-2efc-4f9f-b67d-a5aaeabed38a)
+![Screenshot 2023-11-16 102228](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/7abd7a26-a8b5-41af-922c-74218e877adb)
+![Screenshot 2023-11-16 102253](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/a5079c2c-156c-4176-baa4-f1334e44ae11)
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![Screenshot 2023-11-16 102341](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/be46b484-77f0-4ffb-ab40-d59602e64f2e)
+![Screenshot 2023-11-16 102444](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/d9e997d6-0e1a-45e9-88bd-d0d2113a1781)
+![Screenshot 2023-11-16 102541](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/db1b2c36-7918-459a-8038-ee776b6f16bb)
+![Screenshot 2023-11-16 102617](https://github.com/abhimanyu12321/Shopping-app-frontend/assets/122272179/9545103a-922b-4dca-b5ca-3c70c4e1f408)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
+### `npm run build
+ build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
