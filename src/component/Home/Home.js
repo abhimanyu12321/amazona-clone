@@ -38,8 +38,8 @@ const Home = () => {
                 <img src={caro4} alt="CaroImages" className="" />
               </Carousel>
             </div>
-            <h2 className="text-center text-4xl font-extrabold mt-4">Featured Products </h2>
-            <div className="container flex my-[2vmax] mx-auto w-[80vw] flex-wrap justify-center" id="container" >
+            <h2 className="text-center text-4xl font-extrabold my-10">Featured Products </h2>
+            <div className="container flex gap-6 mx-auto w-[90vw]  lg:w-[80vw] flex-wrap justify-center" id="container" >
 
               {data.products &&
                 data.products.map((product) => (

@@ -9,8 +9,8 @@ const ProductCard = ({ product }) => {
     precision: 0.5,
   };
   return (
-    <Link className="productCard" to={`/product/${product._id}`}>
-      <img src={product.images[0].url} alt={product.name} />
+    <Link className="w-full lg:w-[280px] flex flex-col justify-center items-center text-[rgba(48,48,48)] bg-white lg:m-4 pb-4" to={`/product/${product._id}`}>
+      <img src={product.images[0].url} alt={product.name} className="w-full" />
       <p>{product.name}</p>
       <div className="flex justify-center items-center">
         <Rating {...options} />
