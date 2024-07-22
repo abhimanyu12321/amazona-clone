@@ -10,6 +10,7 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 
+// Toast option
 const options = {
   timeout: 5000,
   position: positions.BOTTOM_CENTER,
