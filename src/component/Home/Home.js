@@ -30,12 +30,12 @@ const Home = () => {
         <>
 
           <div className="con pt-20">
-            <div className="carousel h-[180px]  md:h-[250px] ">
+            <div className="carousel h-[180px]  md:h-[250px] mt-24 lg:my-10">
               <Carousel slideInterval={3000} indicators={false}>
-                <img src={caro1} alt="CaroImages" className="" />
-                <img src={caro2} alt="CaroImages" className="" />
-                <img src={caro3} alt="CaroImages" className="" />
-                <img src={caro4} alt="CaroImages" className="" />
+                <img src={caro1} alt="CaroImages" className="h-full object-cover" />
+                <img src={caro2} alt="CaroImages" className="h-full object-cover" />
+                <img src={caro3} alt="CaroImages" className="h-full object-cover" />
+                <img src={caro4} alt="CaroImages" className="h-full object-cover" />
               </Carousel>
             </div>
             <h2 className="text-center text-4xl font-extrabold my-10">Featured Products </h2>
