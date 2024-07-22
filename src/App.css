@@ -13,3 +13,6 @@
 .primary-color {
   color: #ff9900;
 }
+input:focus {
+  outline: none;
+}
