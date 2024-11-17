@@ -25,8 +25,8 @@ const LoginSignUp = ({ history, location }) => {
   const registerTab = useRef(null);
   const switcherTab = useRef(null);
 
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPassword, setLoginPassword] = useState("");
+  const [loginEmail, setLoginEmail] = useState("test123@test.com");
+  const [loginPassword, setLoginPassword] = useState("test");
 
   const [user, setUser] = useState({
     name: "",
